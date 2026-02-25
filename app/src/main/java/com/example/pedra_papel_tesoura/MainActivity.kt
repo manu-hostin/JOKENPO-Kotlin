@@ -1,11 +1,14 @@
 package com.example.pedra_papel_tesoura
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +21,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
@@ -30,8 +35,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +49,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pedra_papel_tesoura.ui.theme.PedrapapeltesouraTheme
+import java.time.format.TextStyle
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,14 +64,14 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun NavigationApp() {
-    val navController = rememberNavController()
+    val navController = rememberNavController() // Ele sabe qual tela está ativa
 
     NavHost (
         navController = navController,
         startDestination = "home"
     ) {
-        composable("home") {
-            home(navController)
+        composable("home") { // Se a rota for "home"
+            home(navController) // Mostra a tela home
         }
 
         composable("game") {
@@ -74,27 +82,59 @@ fun NavigationApp() {
 
 @Composable
 fun home(navController: NavHostController) {
-    Column(
+
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFF433CAC),
+            Color(0xE14D479E),
+            Color(0xE16734A2)
+        )
+    )
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF7171B8)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .background(backgroundGradient),
+        contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = "JOKENPÔ",
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
 
-        Spacer(modifier = Modifier.height(50.dp))
 
-        Button(onClick = { navController.navigate("game") }) {
-            Text(text = "JOGAR")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "JOKENPÔ",
+                fontSize = 48.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color.White,
+
+            )
+
+            Spacer(modifier = Modifier.height(60.dp))
+
+            Button(
+                onClick = { navController.navigate("game") },  // Procura no navHost uma rota chamada "game"
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF5A52A5)
+                ),
+                modifier = Modifier
+                    .shadow(15.dp, RoundedCornerShape(8.dp))
+                    .border(
+                        width = 2.dp,
+                        color = Color(0xFFB388FF),
+                        shape = RoundedCornerShape(8.dp)
+                    ),
+
+            ) {
+                Text(
+                    text = "JOGAR",
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 2.sp
+                )
+            }
         }
     }
-
 }
 @Composable
 fun jogo(navController: NavHostController) {
@@ -139,7 +179,7 @@ fun jogo(navController: NavHostController) {
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xB2B7BCFA)
+        color = Color(0xABDFD8E4)
     ) {
 
         Column(
@@ -147,7 +187,7 @@ fun jogo(navController: NavHostController) {
         ) {
 
             Surface(
-                color = Color(0xFF7171B8),
+                color = Color(0xFF5A52A5),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(100.dp)
@@ -207,7 +247,7 @@ fun jogo(navController: NavHostController) {
                                 .size(60.dp)
                                 .padding(top = 20.dp)
                                 .background(
-                                    color = Color(0xFF7171B8)
+                                    color = Color(0xFF5A52A5)
                                 ),
                             contentAlignment = Alignment.Center
 
@@ -216,6 +256,7 @@ fun jogo(navController: NavHostController) {
                                 text = "$pontuacao1",
                                 fontSize = 25.sp,
                                 fontWeight = FontWeight.Normal,
+                                color = Color.White
                             )
                         }
 
@@ -244,14 +285,15 @@ fun jogo(navController: NavHostController) {
                                 .size(60.dp)
                                 .padding(top = 20.dp)
                                 .background(
-                                    color = Color(0xFF7171B8)
+                                    color = Color(0xFF5A52A5)
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "$pontuacao2",
                                 fontSize = 25.sp,
-                                fontWeight = FontWeight.Normal
+                                fontWeight = FontWeight.Normal,
+                                color = Color.White
                             )
                         }
 
@@ -270,13 +312,13 @@ fun jogo(navController: NavHostController) {
                     Image(
                         painterResource(id = resultado1),
                         contentDescription = "Movimento jogador 1",
-                        modifier = Modifier.size(130.dp)
+                        modifier = Modifier.size(150.dp)
                     )
 
                     Image(
                         painterResource(id = resultado2),
                         contentDescription = "Movimento jogador 2",
-                        modifier = Modifier.size(130.dp)
+                        modifier = Modifier.size(150.dp)
                     )
 
                 }
@@ -284,8 +326,8 @@ fun jogo(navController: NavHostController) {
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(60.dp)
-                        .background(Color.White),
+                        .height(60.dp),
+                    color = Color(0xFF5A52A5)
                 ) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -300,7 +342,7 @@ fun jogo(navController: NavHostController) {
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
-
+                                color = Color.White
                                 )
 
                         } else if (ganhador == 1) {
@@ -310,6 +352,7 @@ fun jogo(navController: NavHostController) {
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
+                                color = Color.White
                             )
 
                         } else {
@@ -318,6 +361,7 @@ fun jogo(navController: NavHostController) {
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
+                                color = Color.White
                             )
 
                         }
@@ -332,7 +376,7 @@ fun jogo(navController: NavHostController) {
                 Button(
                     border = BorderStroke(1.5.dp, Color.White),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF7171B8)
+                        containerColor = Color(0xFF5A52A5)
                     ),
 
                     shape = RectangleShape,
