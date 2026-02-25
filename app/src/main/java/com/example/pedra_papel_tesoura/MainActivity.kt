@@ -18,10 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,9 +35,12 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.pedra_papel_tesoura.ui.theme.PedrapapeltesouraTheme
 
 class MainActivity : ComponentActivity() {
@@ -47,16 +48,56 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             PedrapapeltesouraTheme {
-                jogo(modifier = Modifier
-                    .fillMaxSize()
-                    .safeDrawingPadding())
-                }
+                NavigationApp()
             }
         }
+    }
 }
 
 @Composable
-fun jogo(modifier: Modifier = Modifier) {
+fun NavigationApp() {
+    val navController = rememberNavController()
+
+    NavHost (
+        navController = navController,
+        startDestination = "home"
+    ) {
+        composable("home") {
+            home(navController)
+        }
+
+        composable("game") {
+            jogo(navController)
+        }
+    }
+}
+
+@Composable
+fun home(navController: NavHostController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF7171B8)),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "JOKENPÔ",
+            fontSize = 40.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+
+        Spacer(modifier = Modifier.height(50.dp))
+
+        Button(onClick = { navController.navigate("game") }) {
+            Text(text = "JOGAR")
+        }
+    }
+
+}
+@Composable
+fun jogo(navController: NavHostController) {
 
     var jogador1 by remember {
         mutableStateOf(1)
@@ -66,7 +107,7 @@ fun jogo(modifier: Modifier = Modifier) {
         mutableStateOf(1)
     }
 
-    var resultado1 = when (jogador1){
+    var resultado1 = when (jogador1) {
 
         1 -> R.drawable.pedra
         2 -> R.drawable.papel
@@ -75,7 +116,7 @@ fun jogo(modifier: Modifier = Modifier) {
         }
     }
 
-    var resultado2 = when (jogador2){
+    var resultado2 = when (jogador2) {
 
         1 -> R.drawable.pedra
         2 -> R.drawable.papel
@@ -91,197 +132,197 @@ fun jogo(modifier: Modifier = Modifier) {
     var pontuacao2 by remember {
         mutableStateOf(0)
     }
-    var ganhador by remember{
+    var ganhador by remember {
         mutableStateOf(0)
     }
 
 
-    Surface(color = Color(0xB2B7BCFA)) {
-
-
-        Surface(
-
-            color = Color(0xFF7171B8),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-
-
-        ) {
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(top = 45.dp, start = 20.dp, end = 20.dp)
-
-            ) {
-                Text(
-                    text = "JOKENPÔ",
-                    fontSize = 35.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-
-                Image(
-                    painter = painterResource(id = R.drawable.icons8_trof_u_48),
-                    contentDescription = "Troféu da vitória",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .width(200.dp)
-
-                )
-            }
-        }
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xB2B7BCFA)
+    ) {
 
         Column(
-            modifier = modifier,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier.fillMaxSize(),
         ) {
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top,
-                modifier = Modifier
-                    .width(322.dp)
-                    .height(100.dp)
-            ) {
-
-                Column(
-                    modifier = Modifier.height(100.dp),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.CenterHorizontally
-
-
-                ) {
-
-
-                    Text(
-                        text = "Player 1",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                color = Color(0xFF7171B8)
-                            ),
-                        contentAlignment = Alignment.Center
-
-                    ) {
-                        Text(
-                            text = "$pontuacao1",
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Normal
-                        )
-                    }
-
-                }
-                Text(
-                    text = "vs",
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 21.sp
-                )
-
-                Column(
-                    modifier = Modifier.height(100.dp),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.CenterHorizontally
-
-                ) {
-
-                    Text(
-                        text = "Player 2",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 30.sp
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .background(
-                                color = Color(0xFF7171B8)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "$pontuacao2",
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Normal
-                        )
-                    }
-
-                }
-
-            }
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .width(340.dp)
-                    .height(350.dp)
-            ) {
-
-                Image(
-                    painterResource(id = resultado1),
-                    contentDescription = "Movimento jogador 1",
-                    modifier = Modifier.size(130.dp)
-                )
-
-                Image(
-                    painterResource(id = resultado2),
-                    contentDescription = "Movimento jogador 2",
-                    modifier = Modifier.size(130.dp)
-                )
-
-            }
-
             Surface(
+                color = Color(0xFF7171B8),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp)
-                    .background(Color.White),
+                    .height(100.dp)
             ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 45.dp, start = 20.dp, end = 20.dp)
                 ) {
+                    Text(
+                        text = "JOKENPÔ",
+                        fontSize = 35.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
 
-
-                    if (ganhador == 0) {
-
-                        Text(
-                            text = "EMPATE!",
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-
-                            )
-
-                    } else if (ganhador == 1) {
-
-                        Text(
-                            text = "PLAYER 1 VENCEU!",
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                        )
-
-                    } else {
-                        Text(
-                            text = "PLAYER 2 VENCEU!",
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center,
-                        )
-
-                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.icons8_trof_u_48),
+                        contentDescription = "Troféu da vitória",
+                        modifier = Modifier.size(30.dp)
+                    )
                 }
             }
+
+
+            Column(
+                modifier = Modifier,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top,
+                    modifier = Modifier
+                        .width(322.dp)
+                        .height(140.dp)
+                        .padding(top = 40.dp)
+                ) {
+
+                    Column(
+                        modifier = Modifier.height(100.dp),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+
+                        Text(
+                            text = "Player 1",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 30.sp,
+
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .padding(top = 20.dp)
+                                .background(
+                                    color = Color(0xFF7171B8)
+                                ),
+                            contentAlignment = Alignment.Center
+
+                        ) {
+                            Text(
+                                text = "$pontuacao1",
+                                fontSize = 25.sp,
+                                fontWeight = FontWeight.Normal,
+                            )
+                        }
+
+                    }
+                    Text(
+                        text = "vs",
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 21.sp
+                    )
+
+                    Column(
+                        modifier = Modifier.height(100.dp),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally
+
+                    ) {
+
+                        Text(
+                            text = "Player 2",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 30.sp
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .padding(top = 20.dp)
+                                .background(
+                                    color = Color(0xFF7171B8)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "$pontuacao2",
+                                fontSize = 25.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
+
+                    }
+
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .width(340.dp)
+                        .height(350.dp)
+                ) {
+
+                    Image(
+                        painterResource(id = resultado1),
+                        contentDescription = "Movimento jogador 1",
+                        modifier = Modifier.size(130.dp)
+                    )
+
+                    Image(
+                        painterResource(id = resultado2),
+                        contentDescription = "Movimento jogador 2",
+                        modifier = Modifier.size(130.dp)
+                    )
+
+                }
+
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .background(Color.White),
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+
+
+                        if (ganhador == 0) {
+
+                            Text(
+                                text = "EMPATE!",
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+
+                                )
+
+                        } else if (ganhador == 1) {
+
+                            Text(
+                                text = "PLAYER 1 VENCEU!",
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                            )
+
+                        } else {
+                            Text(
+                                text = "PLAYER 2 VENCEU!",
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                            )
+
+                        }
+                    }
+                }
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -344,7 +385,4 @@ fun jogo(modifier: Modifier = Modifier) {
             }
         }
     }
-
-
-
-
+}
